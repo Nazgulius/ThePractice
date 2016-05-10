@@ -1,0 +1,72 @@
+
+import java.util.*;
+
+//основной класс для запуска
+
+public class ShipWarTestDrive  {
+    private GameHelper helper = new GameHelper();
+    private ArrayList<ShipWar> shipList = new ArrayList<ShipWar>();
+    private int numOfGuesses = 0;
+
+    private void setUpGame (){
+        //Создаём несколько кораблей и называем их
+        ShipWar one = new ShipWar();
+        one.setName("Автора");
+        ShipWar two = new ShipWar();
+        two.setName("Лёша");
+        ShipWar three = new ShipWar();
+        three.setName("Паша");
+        shipList.add(one);
+        shipList.add(two);
+        shipList.add(three);
+
+        System.out.println("Цель игры - потопить три корабля.");
+        System.out.println("Аврора, Лёша, Паша.");
+        System.out.println("Попытайтесь потопись их за минимальное количество ходов");
+
+        for (ShipWar shipWarToSet : shipList){
+            ArrayList<String> newLocation = helper.placeShipWar(3);
+            shipWarToSet.setLocationCells(newLocation);
+        }
+    } //конец метода setUpdate
+
+    private void startPlaying(){
+        while (!shipList.isEmpty()){
+            String userGuess = helper.getUserInput("Сделайте ход");
+            checkUserGuess(userGuess);
+        }
+        finishGame();
+    } // Конец метода startPlaying
+
+    private void checkUserGuess (String userGuess){
+        numOfGuesses++;
+        String result = "Мимо";
+        for (ShipWar shipWarToTest : shipList){
+            result = shipWarToTest.checkYourself(userGuess);
+            if (result.equals("Попал")){
+                break;
+            }
+            if (result.equals("Потопил")){
+                shipList.remove(shipWarToTest);
+                break;
+            }
+        }
+    } // Конец метода checkUserGuess
+
+    private void finishGame (){
+        System.out.println("Все кораблти ушли ко дну! Ваши люди теперь могут спокойно уплыть.");
+        if (numOfGuesses <= 25){
+        System.out.println("Это заняло у вас всего " + numOfGuesses + " попыток.");
+        System.out.println("Вы успели выбраться до того, как были уничтожены.");
+        } else {
+        System.out.println("Это заняло у вас довольно много времени. " + numOfGuesses + " попыток.");
+        System.out.println("Ваши люди покоятся на дне морском.");
+        }
+    } // Конец метода finishGame
+
+    public  static void main (String[] args){
+        ShipWarTestDrive game = new ShipWarTestDrive();
+        game.setUpGame();
+        game.startPlaying();
+    }  // Конец метода main
+}
